@@ -16,7 +16,7 @@ movie.fetchMovieData()
     console.log('hi', result);
   })
   
-app.use('/api/movie', router(express));
+app.use('/api/', router(express));
 // Starting the express server
 app.listen(port, (err) => {
   if (err) throw err;
