@@ -29,7 +29,7 @@ export class movieDataService {
                 }
                 wantedLines.push(movieObj);
             }
-            if (lineCounter > 10) { lineReader.close(); }
+            if (wantedLines.length == 10) { lineReader.close(); }
             lineCounter++;
 
             lineReaderRating.on('line', function (ratingLine) {
@@ -49,6 +49,7 @@ export class movieDataService {
 
         lineReader.on('close', function () {
             lineReader.removeAllListeners();
+            console.log('wantedLines', wantedLines)
             return { data: wantedLines };
         })
     }
