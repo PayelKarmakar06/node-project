@@ -16,10 +16,9 @@ export class movieDataService {
         var ratingHeader = [];
 
         lineReader.on('line', function (line) {
-            // var lineReaderRating = require('readline').createInterface({
-            //     input: fs.createReadStream('assets/title.ratings.tsv/data.tsv'),
-            // });
-            console.log('in on');
+            var lineReaderRating = require('readline').createInterface({
+                input: fs.createReadStream('assets/title.ratings.tsv/data.tsv'),
+            });
             var movieObj = {};
             if (lineCounter == 0) { header = line.split('\t'); }
             if (lineCounter > pageNo * 10 && lineCounter < (pageNo * 10) + 10) {
@@ -32,19 +31,22 @@ export class movieDataService {
                 wantedLines.push(movieObj);
             }
 
-            // lineReaderRating.on('line', function (ratingLine) {
-            //     if (lineCounterRating == 0) { ratingHeader = ratingLine.split('\t') }
-            //     if (lineCounterRating !== 0 && lineCounterRating < 11) {
-            //         var rowElemRating = ratingLine.split('\t');
-            //         for (var j = 0; j < rowElemRating.length; j++) {
-            //             if (wantedLines[lineCounterRating - 1][ratingHeader[0]] === rowElemRating[0]) {
-            //                 wantedLines[lineCounterRating - 1][ratingHeader[j]] = rowElemRating[j];
-            //             }
-            //         }
-            //     }
-            //     if (lineCounterRating > 10) { lineReaderRating.close(); }
-            //     lineCounterRating++;
-            // })
+            lineReaderRating.on('line', function (ratingLine) {
+                let rowIndex = 0;
+                if (lineCounterRating == 0) { ratingHeader = ratingLine.split('\t'); }
+                if (lineCounterRating > pageNo * 10 && lineCounterRating < (pageNo * 10) + 10) {
+                    if(lineCounterRating % 10 == 1) { lineCounterRating--; }
+                    const rowElemRating = ratingLine.split('\t');
+                    rowIndex = wantedLines.findIndex(elem => { return elem.tconst === rowElemRating[0]});
+                    for (var j = 0; j < rowElemRating.length; j++) {
+                        if(rowIndex > -1) {
+                            wantedLines[rowIndex][ratingHeader[j]] = rowElemRating[j];
+                        }
+                    }
+                }
+                if(rowIndex == -1) { lineReaderRating.close(); }
+                lineCounterRating++;
+            })
 
             if (wantedLines.length == 10) { lineReader.close(); }
             lineCounter++;
@@ -52,11 +54,10 @@ export class movieDataService {
 
         lineReader.on('close', function () {
             lineReader.removeAllListeners();
-            console.log('close', wantedLines)
             return wantedLines;
         })
 
-        return await wantedLines;
+        return wantedLines;
     }
 
 }
