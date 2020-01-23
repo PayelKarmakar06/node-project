@@ -11,7 +11,7 @@ export class movieDataService {
         if (searchBy && searchBy !== 'undefined') {
             console.log('in if')
             wantedLines = await this.searchMovieData(searchBy);
-        } else if(sortBy && order && sortBy !== 'undefined' && order !== 'undefined') {
+        } else if(sortBy && sortBy !== 'undefined') {
             console.log('in else if')
             wantedLines = await this.sortMovieData(sortBy, order);
         } else {
@@ -166,8 +166,8 @@ export class movieDataService {
                     let rowElem = results.data.find(rowData => { return wantedLines[i].tconst === rowData[0] });
                     wantedLines[i]['averageRating'] = rowElem[1];
                 }
-                if (sortingOrder === 'asc') { wantedLines = wantedLines.sort((a, b) => { return a[fieldName] - b[fieldName] }); }
-                else { wantedLines = wantedLines.sort((a, b) => { return b[fieldName] - a[fieldName] }); }
+                // if (sortingOrder === 'asc') { wantedLines = wantedLines.sort((a, b) => { return a[fieldName] - b[fieldName] }); }
+                // else { wantedLines = wantedLines.sort((a, b) => { return b[fieldName] - a[fieldName] }); }
                 Papa.abort();
                 return wantedLines;
             }
